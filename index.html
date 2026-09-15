@@ -309,19 +309,115 @@
     line-height:1.35;
   }
 
+  /* TAB PANELS (driven by hero buttons) */
+  .tab-panel[hidden]{ display:none; }
+
   /* RESUME */
-  .resume-box{
+  .resume-toolbar{
     display:flex;
     align-items:center;
     justify-content:space-between;
     gap:16px;
     flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+  .resume-filename{ margin:0; font-size:13px; color:var(--text-dimmer); font-family:var(--mono); }
+
+  .resume-doc{
     background:var(--surface);
     border:1px solid var(--border);
-    border-radius:10px;
-    padding:20px 24px;
+    border-radius:12px;
+    padding:32px 34px;
   }
-  .resume-box p{ margin:0; font-size:14px; color:var(--text-dim); font-family:var(--mono); }
+  .resume-doc-head{
+    padding-bottom:18px;
+    margin-bottom:22px;
+    border-bottom:2px solid var(--red-deep);
+  }
+  .resume-name{
+    font-family:var(--font-display);
+    font-size:1.5rem;
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .resume-role{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.04em;
+    color:var(--red);
+    margin:0 0 12px;
+  }
+  .resume-contact-lines p{
+    margin:0;
+    font-size:12.5px;
+    color:var(--text-dimmer);
+    line-height:1.6;
+  }
+  .resume-doc-block{ margin-bottom:26px; }
+  .resume-doc-block:last-of-type{ margin-bottom:0; }
+  .resume-doc-heading{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--amber);
+    font-weight:600;
+    margin:0 0 12px;
+  }
+  .resume-doc-text{
+    font-size:14px;
+    color:var(--text-dim);
+    line-height:1.7;
+    margin:0;
+    max-width:66ch;
+  }
+  .resume-edu-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:14px 24px;
+  }
+  .resume-edu-title{ margin:0 0 3px; font-size:14px; font-weight:600; color:var(--text); }
+  .resume-edu-sub{ margin:0; font-size:12.5px; color:var(--text-dimmer); }
+  .resume-proj{ margin-bottom:20px; }
+  .resume-proj:last-child{ margin-bottom:0; }
+  .resume-proj-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .resume-proj-title{ margin:0; font-size:14.5px; font-weight:600; color:var(--text); }
+  .resume-proj-date{ margin:0; font-family:var(--mono); font-size:11.5px; color:var(--text-dimmer); }
+  .resume-proj-stack{ margin:4px 0 8px; font-size:12px; color:var(--red); font-family:var(--mono); }
+  .resume-proj-list{ margin:0 0 8px; padding-left:18px; }
+  .resume-proj-list li{ font-size:13.5px; color:var(--text-dim); line-height:1.6; margin-bottom:4px; }
+  .resume-proj-link{ margin:0; font-size:12.5px; font-family:var(--mono); }
+  .resume-proj-link a{ color:var(--text); text-decoration:none; border-bottom:1px solid var(--red-deep); }
+  .resume-proj-link a:hover{ color:var(--red); border-color:var(--red); }
+  .resume-skills-grid{
+    display:grid;
+    grid-template-columns:160px 1fr;
+    gap:10px 16px;
+  }
+  .resume-skill-label{ margin:0; font-size:12.5px; font-weight:600; color:var(--text); }
+  .resume-skill-value{ margin:0; font-size:13px; color:var(--text-dim); }
+  .resume-doc-footer{
+    margin:26px 0 0;
+    padding-top:18px;
+    border-top:1px solid var(--border);
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text-dimmer);
+    text-align:center;
+  }
+
+  @media (max-width:600px){
+    .resume-doc{ padding:24px 20px; }
+    .resume-edu-grid{ grid-template-columns:1fr; }
+    .resume-skills-grid{ grid-template-columns:1fr; gap:2px 0; }
+    .resume-skill-value{ margin-bottom:8px; }
+  }
 
   footer{
     text-align:center;
@@ -363,10 +459,10 @@
           </div>
         </div>
       </div>
-      <div class="btn-row">
-        <a class="btn btn-solid" href="#projects">Projects</a>
-        <a class="btn btn-ghost" href="#contact">Contact Me</a>
-        <a class="btn btn-ghost" href="#resume">Resume</a>
+      <div class="btn-row" role="tablist" aria-label="View section">
+        <button class="btn btn-solid" type="button" data-panel-link="projects" role="tab" aria-selected="true">Projects</button>
+        <button class="btn btn-ghost" type="button" data-panel-link="contact" role="tab" aria-selected="false">Contact Me</button>
+        <button class="btn btn-ghost" type="button" data-panel-link="resume" role="tab" aria-selected="false">Resume</button>
       </div>
     </div>
   </header>
@@ -378,103 +474,235 @@
       <blockquote>Nice to meet you! I'm a CS student who enjoys turning raw data into insights that actually mean something. I like cleaning messy datasets, spotting patterns, and building dashboards people can act on. I also enjoy building the web experiences that put that data in front of people. Always looking for ways to sharpen both sides of that skill set.</blockquote>
     </section>
 
-    <section id="projects">
-      <div class="section-head"><span class="mark"></span><h2 class="section-title">Projects</h2></div>
-      <div class="legend">
-        <span class="legend-item finished">Finished</span>
-        <span class="legend-item team">Team</span>
+    <section id="info">
+      <div class="section-head"><span class="mark"></span><h2 class="section-title" id="info-title">Projects</h2></div>
+
+      <div class="tab-panel active" id="panel-projects" data-panel-content="projects" role="tabpanel">
+        <div class="legend">
+          <span class="legend-item finished">Finished</span>
+          <span class="legend-item team">Team</span>
+        </div>
+
+        <article class="project-entry">
+          <div class="project-head">
+            <h3 class="project-title"><a href="https://github.com/n4t5Uuu/dwh_finalproject_3CSC_group_Lakers-Showtime" target="_blank" rel="noopener">Data Warehousing Final Project</a></h3>
+            <div class="project-badges">
+              <span class="badge finished">Finished</span>
+              <span class="badge team">Team</span>
+            </div>
+          </div>
+          <p class="project-desc">A data warehousing project done with 7 other members for our Data Warehousing class. Built a Kimball-style ETL pipeline over a synthetic e-commerce dataset, with Power BI dashboards surfacing business-ready KPIs.</p>
+          <a class="project-link" href="https://github.com/n4t5Uuu/dwh_finalproject_3CSC_group_Lakers-Showtime" target="_blank" rel="noopener">View on GitHub →</a>
+        </article>
+
+        <article class="project-entry">
+          <div class="project-head">
+            <h3 class="project-title"><a href="https://www.dollysclosetph.com" target="_blank" rel="noopener">Dolly's Closet Catalog Website</a></h3>
+            <div class="project-badges">
+              <span class="badge finished">Finished</span>
+            </div>
+          </div>
+          <p class="project-desc">A simple product catalog website for Dolly's Closet, showcasing their products with a Supabase-backed inventory system, secure authentication, and a clean, on-brand UI.</p>
+          <a class="project-link" href="https://www.dollysclosetph.com" target="_blank" rel="noopener">Visit site →</a>
+        </article>
       </div>
 
-      <article class="project-entry">
-        <div class="project-head">
-          <h3 class="project-title"><a href="https://github.com/n4t5Uuu/dwh_finalproject_3CSC_group_Lakers-Showtime" target="_blank" rel="noopener">Data Warehousing Final Project</a></h3>
-          <div class="project-badges">
-            <span class="badge finished">Finished</span>
-            <span class="badge team">Team</span>
-          </div>
+      <div class="tab-panel" id="panel-contact" data-panel-content="contact" role="tabpanel" hidden>
+        <div class="contact-grid">
+          <a class="contact-card" href="mailto:jorgekbaltazar@gmail.com">
+            <span class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
+            </span>
+            <span class="contact-body">
+              <span class="contact-label">Email</span>
+              <span class="contact-value">jorgekbaltazar@gmail.com</span>
+            </span>
+          </a>
+
+          <a class="contact-card" href="tel:+639485405139">
+            <span class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </span>
+            <span class="contact-body">
+              <span class="contact-label">Phone</span>
+              <span class="contact-value">(+63) 948 540 5139</span>
+            </span>
+          </a>
+
+          <a class="contact-card" href="https://www.linkedin.com/in/jorge-baltazar-492626368/" target="_blank" rel="noopener">
+            <span class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            </span>
+            <span class="contact-body">
+              <span class="contact-label">LinkedIn</span>
+              <span class="contact-value">in/jorge-baltazar-492626368</span>
+            </span>
+          </a>
+
+          <a class="contact-card" href="https://github.com/JorjLovesCoding" target="_blank" rel="noopener">
+            <span class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.98 5.24.98 11.52c0 5.02 3.26 9.28 7.78 10.78.57.1.78-.25.78-.55v-2.15c-3.16.7-3.83-1.36-3.83-1.36-.52-1.32-1.27-1.67-1.27-1.67-1.04-.72.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.72-1.53-2.52-.29-5.17-1.26-5.17-5.6 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.14 1.16a10.9 10.9 0 0 1 5.72 0c2.18-1.47 3.14-1.16 3.14-1.16.62 1.57.23 2.73.11 3.02.73.79 1.17 1.8 1.17 3.04 0 4.35-2.66 5.31-5.19 5.59.41.36.77 1.06.77 2.14v3.17c0 .3.2.66.79.55 4.51-1.51 7.77-5.76 7.77-10.78C23.02 5.24 18.27.5 12 .5z"/></svg>
+            </span>
+            <span class="contact-body">
+              <span class="contact-label">GitHub</span>
+              <span class="contact-value">github.com/JorjLovesCoding</span>
+            </span>
+          </a>
+
+          <a class="contact-card" href="https://www.facebook.com/jorj.kolin/" target="_blank" rel="noopener">
+            <span class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/></svg>
+            </span>
+            <span class="contact-body">
+              <span class="contact-label">Facebook</span>
+              <span class="contact-value">facebook.com/jorj.kolin</span>
+            </span>
+          </a>
         </div>
-        <p class="project-desc">A data warehousing project done with 7 other members for our Data Warehousing class. Built a Kimball-style ETL pipeline over a synthetic e-commerce dataset, with Power BI dashboards surfacing business-ready KPIs.</p>
-        <a class="project-link" href="https://github.com/n4t5Uuu/dwh_finalproject_3CSC_group_Lakers-Showtime" target="_blank" rel="noopener">View on GitHub →</a>
-      </article>
-
-      <article class="project-entry">
-        <div class="project-head">
-          <h3 class="project-title"><a href="https://www.dollysclosetph.com" target="_blank" rel="noopener">Dolly's Closet Catalog Website</a></h3>
-          <div class="project-badges">
-            <span class="badge finished">Finished</span>
-          </div>
-        </div>
-        <p class="project-desc">A simple product catalog website for Dolly's Closet, showcasing their products with a Supabase-backed inventory system, secure auth, and a clean, on-brand UI.</p>
-        <a class="project-link" href="https://www.dollysclosetph.com" target="_blank" rel="noopener">Visit site →</a>
-      </article>
-    </section>
-
-    <section id="contact">
-      <div class="section-head"><span class="mark"></span><h2 class="section-title">Let's Connect!</h2></div>
-      <div class="contact-grid">
-        <a class="contact-card" href="mailto:jorgekbaltazar@gmail.com">
-          <span class="contact-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
-          </span>
-          <span class="contact-body">
-            <span class="contact-label">Email</span>
-            <span class="contact-value">jorgekbaltazar@gmail.com</span>
-          </span>
-        </a>
-
-        <a class="contact-card" href="tel:+639485405139">
-          <span class="contact-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          </span>
-          <span class="contact-body">
-            <span class="contact-label">Phone</span>
-            <span class="contact-value">(+63) 948 540 5139</span>
-          </span>
-        </a>
-
-        <a class="contact-card" href="https://www.linkedin.com/in/jorge-baltazar-492626368/" target="_blank" rel="noopener">
-          <span class="contact-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
-          </span>
-          <span class="contact-body">
-            <span class="contact-label">LinkedIn</span>
-            <span class="contact-value">in/jorge-baltazar-492626368</span>
-          </span>
-        </a>
-
-        <a class="contact-card" href="https://github.com/JorjLovesCoding" target="_blank" rel="noopener">
-          <span class="contact-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.98 5.24.98 11.52c0 5.02 3.26 9.28 7.78 10.78.57.1.78-.25.78-.55v-2.15c-3.16.7-3.83-1.36-3.83-1.36-.52-1.32-1.27-1.67-1.27-1.67-1.04-.72.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.72-1.53-2.52-.29-5.17-1.26-5.17-5.6 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.14 1.16a10.9 10.9 0 0 1 5.72 0c2.18-1.47 3.14-1.16 3.14-1.16.62 1.57.23 2.73.11 3.02.73.79 1.17 1.8 1.17 3.04 0 4.35-2.66 5.31-5.19 5.59.41.36.77 1.06.77 2.14v3.17c0 .3.2.66.79.55 4.51-1.51 7.77-5.76 7.77-10.78C23.02 5.24 18.27.5 12 .5z"/></svg>
-          </span>
-          <span class="contact-body">
-            <span class="contact-label">GitHub</span>
-            <span class="contact-value">github.com/JorjLovesCoding</span>
-          </span>
-        </a>
-
-        <a class="contact-card" href="https://www.facebook.com/jorj.kolin/" target="_blank" rel="noopener">
-          <span class="contact-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/></svg>
-          </span>
-          <span class="contact-body">
-            <span class="contact-label">Facebook</span>
-            <span class="contact-value">facebook.com/jorj.kolin</span>
-          </span>
-        </a>
       </div>
-    </section>
 
-    <section id="resume">
-      <div class="section-head"><span class="mark"></span><h2 class="section-title">Resume</h2></div>
-      <div class="resume-box">
-        <p>Baltazar-Resume.pdf</p>
-        <a class="btn btn-solid" href="./Baltazar-Resume.pdf" download>Download</a>
+      <div class="tab-panel" id="panel-resume" data-panel-content="resume" role="tabpanel" hidden>
+        <div class="resume-toolbar">
+          <p class="resume-filename">Baltazar-Resume.pdf</p>
+          <a class="btn btn-solid" href="./Baltazar-Resume.pdf" download>Download PDF</a>
+        </div>
+
+        <div class="resume-doc">
+          <div class="resume-doc-head">
+            <div>
+              <p class="resume-name">Jorge Kollin T. Baltazar</p>
+              <p class="resume-role">CICS Student &nbsp;|&nbsp; Researcher</p>
+            </div>
+            <div class="resume-contact-lines">
+              <p>2873 Villa Imelda Area D. Camarin, Caloocan City, Metro Manila, 1400</p>
+              <p>(+63) 948 540 5139 &nbsp;&middot;&nbsp; jorgekollin.baltazar.cics@ust.edu.ph &nbsp;&middot;&nbsp; University of Santo Tomas</p>
+            </div>
+          </div>
+
+          <div class="resume-doc-block">
+            <h3 class="resume-doc-heading">Career Objective</h3>
+            <p class="resume-doc-text">Detail-oriented and proactive Information and Computing Science student with hands-on skills in Python development, full-stack web development, UI design, data cleaning, and quality assurance. Committed to delivering clean, efficient, and user-friendly digital solutions, with a strong ability to manage data, test systems, and collaborate with teams. Seeking opportunities as a Data Entry Virtual Assistant, Junior Developer, or QA Tester.</p>
+          </div>
+
+          <div class="resume-doc-block">
+            <h3 class="resume-doc-heading">Education</h3>
+            <div class="resume-edu-grid">
+              <div class="resume-edu-item">
+                <p class="resume-edu-title">Bachelor of Science in Computer Science</p>
+                <p class="resume-edu-sub">University of Santo Tomas &nbsp;|&nbsp; 2023 &ndash; Present</p>
+              </div>
+              <div class="resume-edu-item">
+                <p class="resume-edu-title">Senior High School (STEM Strand)</p>
+                <p class="resume-edu-sub">University of Santo Tomas &nbsp;|&nbsp; 2023</p>
+              </div>
+              <div class="resume-edu-item">
+                <p class="resume-edu-title">Junior High School</p>
+                <p class="resume-edu-sub">Mater Carmeli School of Novaliches &nbsp;|&nbsp; 2021</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="resume-doc-block">
+            <h3 class="resume-doc-heading">Projects</h3>
+
+            <div class="resume-proj">
+              <div class="resume-proj-head">
+                <p class="resume-proj-title">ShopZada Data Warehouse</p>
+                <p class="resume-proj-date">Dec 2025</p>
+              </div>
+              <p class="resume-proj-stack">Python &middot; Pandas &middot; PostgreSQL &middot; Docker &middot; Apache Airflow &middot; Power BI</p>
+              <ul class="resume-proj-list">
+                <li>Designed a full ETL pipeline for a multi-department e-commerce dataset as a Data Warehousing capstone, covering ingestion, transformation, and loading stages.</li>
+                <li>Implemented a Kimball star schema with SCD Type 2 change tracking to preserve accurate historical records across all departments.</li>
+                <li>Built Power BI dashboards surfacing business-ready KPIs; also architected the hybrid ETL pipeline and authored all data-cleaning scripts.</li>
+              </ul>
+              <p class="resume-proj-link">GitHub: <a href="https://github.com/n4t5Uuu/dwh_finalproject_3CSC_group_Lakers-Showtime" target="_blank" rel="noopener">github.com/n4t5Uuu/dwh_finalproject_3CSC_group_Lakers-Showtime</a></p>
+            </div>
+
+            <div class="resume-proj">
+              <div class="resume-proj-head">
+                <p class="resume-proj-title">Dolly's Closet &mdash; Fashion E-Commerce Website</p>
+                <p class="resume-proj-date">2025</p>
+              </div>
+              <p class="resume-proj-stack">React.js &middot; Tailwind CSS &middot; Node.js &middot; Supabase</p>
+              <ul class="resume-proj-list">
+                <li>Developed a fully responsive e-commerce website for a local fashion brand, featuring a product catalog, filtering system, and a clean, on-brand UI.</li>
+                <li>Implemented a Supabase-backed inventory and order management system with real-time updates and secure authentication.</li>
+                <li>Focused on delivering an intuitive shopping experience across mobile and desktop, translating the brand's aesthetic into the digital interface.</li>
+              </ul>
+              <p class="resume-proj-link">Website: <a href="https://www.dollyclosetph.com" target="_blank" rel="noopener">www.dollyclosetph.com</a></p>
+            </div>
+          </div>
+
+          <div class="resume-doc-block">
+            <h3 class="resume-doc-heading">Skills</h3>
+            <div class="resume-skills-grid">
+              <p class="resume-skill-label">Languages</p>
+              <p class="resume-skill-value">Python, JavaScript, SQL, HTML/CSS, Java, Rust</p>
+
+              <p class="resume-skill-label">Databases &amp; Cloud</p>
+              <p class="resume-skill-value">PostgreSQL, MySQL, Supabase</p>
+
+              <p class="resume-skill-label">DevOps</p>
+              <p class="resume-skill-value">Docker, Apache Airflow, Kestra</p>
+
+              <p class="resume-skill-label">Frameworks &amp; Libraries</p>
+              <p class="resume-skill-value">React.js, Node.js, Flutter, Tailwind CSS, Bootstrap, Scikit-learn, Pandas, NumPy, OpenAI</p>
+
+              <p class="resume-skill-label">Tools</p>
+              <p class="resume-skill-value">Figma, Git, Power BI, Matplotlib, Excel, Trello</p>
+            </div>
+          </div>
+
+          <p class="resume-doc-footer">Portfolio, transcript of records, and recommendation letters available upon request.</p>
+        </div>
       </div>
     </section>
 
   </div>
 
   <footer>Built with HTML · CSS · JavaScript</footer>
+
+  <script>
+    (function(){
+      var heroLinks = document.querySelectorAll('[data-panel-link]');
+      var panels = document.querySelectorAll('.tab-panel');
+      var infoTitle = document.getElementById('info-title');
+      var aboutSection = document.getElementById('about');
+      var titles = { projects: 'Projects', contact: "Let's Connect!", resume: 'Resume' };
+
+      function showPanel(name){
+        if(aboutSection){
+          if(name === 'projects'){ aboutSection.removeAttribute('hidden'); }
+          else { aboutSection.setAttribute('hidden', ''); }
+        }
+        heroLinks.forEach(function(btn){
+          var active = btn.getAttribute('data-panel-link') === name;
+          btn.classList.toggle('btn-solid', active);
+          btn.classList.toggle('btn-ghost', !active);
+          btn.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        panels.forEach(function(panel){
+          var match = panel.getAttribute('data-panel-content') === name;
+          panel.classList.toggle('active', match);
+          if(match){ panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
+        });
+        if(infoTitle && titles[name]){ infoTitle.textContent = titles[name]; }
+        if(history.replaceState){ history.replaceState(null, '', '#' + name); }
+      }
+
+      heroLinks.forEach(function(link){
+        link.addEventListener('click', function(){
+          showPanel(link.getAttribute('data-panel-link'));
+        });
+      });
+
+      var initial = (window.location.hash || '').replace('#', '');
+      if(titles[initial]){
+        showPanel(initial);
+      }
+    })();
+  </script>
 
 </body>
 </html>
